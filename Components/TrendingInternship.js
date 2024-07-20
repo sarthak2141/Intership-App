@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {ScrollView} from 'react-native-virtualized-view';
+
 const data = [
   {id: 1, name: 'Banking ', icon: 'account-balance', color: '#ff6347'},
   {id: 2, name: 'FMCG', icon: 'local-grocery-store', color: '#32cd32'},
@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
     borderRadius: 10,
-    elevation: 5,
+    elevation: 4,
+    shadowColor:'#000',
     alignItems: 'center',
   },
   text: {

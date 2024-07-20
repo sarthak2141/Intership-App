@@ -2,6 +2,7 @@ import { StyleSheet, Text, View ,Image, ScrollView ,TextInput} from 'react-nativ
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { TouchableOpacity } from 'react-native';
+import { DrawerActions } from '@react-navigation/native';
 const Header = ({navigation}) => {
     
 
@@ -12,19 +13,14 @@ const Header = ({navigation}) => {
     
     <ScrollView showsVerticalScrollIndicator={false} >
 
-    
+    <View>
+
+   
     <View style={styles.headerContainer}>
-    {/* <Image
-      source={require('../assets/images/avatar4.jpg')} 
-      style={styles.profileImage}
-    /> */}
-    {/* <View style={styles.textContainer}>
-      <Text style={styles.greetingText}>Hello,</Text>
-      <Text style={styles.userName}>userName</Text>
-    </View> */}
+    
       <View style={styles.textContainer}>
-      <TouchableOpacity >
-        <Icon name='menu' size={24} color="black" style={styles.icon}/>
+      <TouchableOpacity  onPress={() => navigation.dispatch(DrawerActions.openDrawer())}  >
+        <Icon name='menu' size={27} color="black" style={styles.icon}/>
         </TouchableOpacity>
       </View>
 
@@ -40,7 +36,7 @@ const Header = ({navigation}) => {
   </View>
   
         
-     
+  </View>
   </ScrollView>
   </View>
 );
@@ -52,41 +48,30 @@ export default Header
 const styles = StyleSheet.create({
    
    container:{
+    marginTop:5,
     flex:1,
     backgroundColor:'#eff4fd'
    }
     ,
 
     headerContainer: {
+      
       flexDirection: 'row',
       alignItems: 'center',
-      
+     
       paddingHorizontal: 15,
       borderRadius: 25,
       marginHorizontal: 8,
-      marginTop:10
+      marginTop:8
     },
-    profileImage: {
-      width: 50,
-      height: 50,
-      borderRadius: 20,
-      
-      
-    },
+   
     textContainer: {
       flex: 1,
       
       
     },
-    greetingText: {
-      color: 'black',
-      fontSize: 14,
-    },
-    userName: {
-      color: 'black',
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
+   
+   
     iconsContainer: {
       flexDirection: 'row',
     },
