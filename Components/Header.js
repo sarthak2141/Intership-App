@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { TouchableOpacity } from 'react-native';
 const Header = ({navigation}) => {
-    const [isSearchVisible, setIsSearchVisible] = useState(false)
+    
 
     
   return (
@@ -14,14 +14,21 @@ const Header = ({navigation}) => {
 
     
     <View style={styles.headerContainer}>
-    <Image
+    {/* <Image
       source={require('../assets/images/avatar4.jpg')} 
       style={styles.profileImage}
-    />
-    <View style={styles.textContainer}>
+    /> */}
+    {/* <View style={styles.textContainer}>
       <Text style={styles.greetingText}>Hello,</Text>
       <Text style={styles.userName}>userName</Text>
-    </View>
+    </View> */}
+      <View style={styles.textContainer}>
+      <TouchableOpacity >
+        <Icon name='menu' size={24} color="black" style={styles.icon}/>
+        </TouchableOpacity>
+      </View>
+
+
     <View style={styles.iconsContainer}>
         <TouchableOpacity onPress={()=>(navigation.navigate('SearchScreen'))}>
     <Icon name="search" size={24} color="black" style={styles.icon} />
@@ -31,15 +38,9 @@ const Header = ({navigation}) => {
     </TouchableOpacity>
     </View>
   </View>
-  {isSearchVisible && (
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search..."
-            placeholderTextColor="#999"
-          />
-        </View>
-      )}
+  
+        
+     
   </ScrollView>
   </View>
 );
@@ -60,18 +61,22 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       
-      padding: 16,
+      paddingHorizontal: 15,
       borderRadius: 25,
-      margin: 7,
+      marginHorizontal: 8,
+      marginTop:10
     },
     profileImage: {
       width: 50,
       height: 50,
       borderRadius: 20,
+      
+      
     },
     textContainer: {
       flex: 1,
-      marginLeft: 12,
+      
+      
     },
     greetingText: {
       color: 'black',
@@ -90,7 +95,7 @@ const styles = StyleSheet.create({
     },
     searchContainer: {
         padding: 16,
-        backgroundColor:'#16151a'
+        
       },
       searchInput: {
         backgroundColor: '#fff',

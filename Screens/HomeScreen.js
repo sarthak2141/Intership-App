@@ -9,7 +9,7 @@ import FotterCard from '../Components/FotterCard';
 
 const HomeScreen = ({navigation}) => {
   return (
-    <ScrollView  showsHorizontalScrollIndicator={false} style={{backgroundColor:"#eff4fd",}}>
+    <ScrollView  showsHorizontalScrollIndicator={false} style={{backgroundColor:"#eff4fd", }}>
 <View >
 <Header navigation={navigation} />
 </View>
@@ -42,7 +42,7 @@ const HomeScreen = ({navigation}) => {
 
 <View style={styles.IntershipCOntainer}>
 <View style={{ flexDirection:'row'}}>
-    <View>
+    <View style={{marginLeft:3}}>
 <Text style={styles.internText1}>
     CheckOut
  
@@ -62,16 +62,16 @@ Interships
 <View style={{width:'73%'}}>
 
 
-<Text style={{fontSize:17,color:'#fff',fontWeight:'500',marginTop:3,marginLeft:3}}>
+<Text style={{fontSize:17,color:'#fff',fontWeight:'500',marginTop:3,marginLeft:4}}>
 Find Your Perfect Internship Now
 
 </Text >
-<Text style={{fontSize:16,color:'#fff',marginLeft:14,fontWeight:'500',marginTop:2}}>
+<Text style={{fontSize:16,color:'#fff',marginLeft:4,fontWeight:'500',marginTop:2}}>
 We Take Your Responsibility
 </Text>
 </View>
 
-<TouchableOpacity style={{marginTop:14,  backgroundColor:'#fff',borderRadius:32,alignItems:'center',padding:2,marginRight:6,justifyContent:'center'}} >
+<TouchableOpacity style={{marginTop:14,  backgroundColor:'#fff',borderRadius:32,alignItems:'center',padding:2,marginRight:7,justifyContent:'center'}} >
         <Icon name='chevron-right' color='black' size={39} style={{left:2}} />
         </TouchableOpacity>
 
@@ -83,10 +83,10 @@ We Take Your Responsibility
 
 <View>
     <View style={{flexDirection:'row',alignItems:'center', marginHorizontal:7}}>
-   <Text style={{fontSize:20,color:'black',fontWeight:'600' }}>
+   <Text style={{fontSize:20,color:'black',fontWeight:'600',marginLeft:11 }}>
    Tranding Internship
     </Text>
-  <Icon name='clipboard' size={36} color='#f47e7e' style={{marginHorizontal:5 }}/>
+  
   </View>
 
 
@@ -98,14 +98,19 @@ We Take Your Responsibility
  
   </View>
 
-
 <View>
+<View  style={{backgroundColor:"#fff", 
+     marginLeft:20,
+     marginRight:22,
+ marginTop:11,
+     elevation:5,
+     paddingBottom:10,
+     borderRadius:10,
+     marginBottom:10
+}}>
     <Services/>
-  </View>
-
-
-<View>
     <FotterCard/>
+</View>
 </View>
 </View>
 
@@ -128,39 +133,40 @@ const styles = StyleSheet.create({
     Hiringcard:{
         width:180,
         height:160,
-        backgroundColor:"#7547ef",
-        borderRadius:23, 
-        marginRight:10,
+        backgroundColor:"#5A64F5",
+        borderRadius:10, 
+        marginRight:8,
         elevation:8,
         marginVertical:10
     },
     findjobCard:{
         width:180,
         height:160,
-        backgroundColor:"#7547ef",
-        borderRadius:23,
-        marginLeft:10,
+        backgroundColor:"#5A64F5",
+        borderRadius:10,
+        marginLeft:8,
         elevation:8,
         marginVertical:10
     },
     CardImg:{
         width:'100%',
         height:120,
-        borderTopRightRadius:23,
-        borderTopLeftRadius:23,
+        borderTopRightRadius:10,
+        borderTopLeftRadius:10,
     },
     cardContaainer:{
         flexDirection:'row',
-        justifyContent:'center'
-      
+        justifyContent:'center',
+      marginTop:7
     },
     IntershipCOntainer:{
-        width:"90%",
-        backgroundColor:'#7547ef',
+        width:"91.2%",
+        backgroundColor:'#5A64F5',
         height:200,
-       marginHorizontal:21,
-       marginVertical:17,
-       borderRadius:23,
+       marginLeft:17,
+       marginRight:10,
+       marginVertical:8,
+       borderRadius:10,
        elevation:9,
       
     },
@@ -169,7 +175,7 @@ const styles = StyleSheet.create({
         fontWeight:'700',
         color:'#ffff',
         marginLeft:14, marginRight:0,
-        marginTop:6,
+        marginTop:7,
         
     },
     internText2:{
@@ -192,6 +198,7 @@ const styles = StyleSheet.create({
         width:220,
         height:120,
         marginLeft:4,
+        marginTop:5
 
     }
 })

@@ -1,59 +1,89 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // You can choose any icon set you like
+import { View, Text, StyleSheet, ScrollView, FlatList } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons'; 
 
 const data = [
-  { icon: 'work', label: 'Certifications', count: '4400+', color: '#FF6347' },
-  { icon: 'person', label: 'Resume Services', count: '1700+', color: '#4682B4' },
-  { icon: 'description', label: 'Premium Services', count: '1250+', color: '#32CD32' },
+  {  id:"01",icon: 'work', label: 'Certifications  ', count: '4400+', color: '#FF6347' },
+  { id:"02", icon: 'person', label: 'Resume ', count: '1700+', color: '#4682B4' },
+  { id:"03", icon: 'description', label: 'Premium ', count: '1250+', color: '#32CD32' },
+  {  id:"05",icon: 'chat', label: 'Career Advice', count: '3500+', color: '#20b2aa' },
+  {  id:"04",icon: 'insert-drive-file', label: 'Internship', count: '5300+', color: '#ffa500' },
+  {  id:"06",icon: 'favorite', label: 'Part Time Jobs', count: '2600+', color: 'red' },
 ];
 
-const ServiceCard = ({ icon, label, count, color }) => (
+const FotterCard = () => (
+ 
+<View style={styles.container}>
+
+
+  <FlatList 
+data={data}
+keyExtractor={(item)=> item.id.toString()}
+  
+numColumns={3}
+renderItem={({ item }) => (
   <View style={styles.card}>
-    <Icon name={icon} size={40} color={color} />
-    <Text style={styles.label}>{label}</Text>
-    <Text style={styles.count}>{count}</Text>
+    <Icon name={item.icon} size={40} color={item.color} />
+    <Text style={styles.label}>{item.label}</Text>
+    <Text style={styles.count}>{item.count}</Text>
   </View>
+
+  )
+}
+  />
+</View>
 );
 
-const FotterCard = () => {
-  return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-    <View style={styles.container}>
-      {data.map((item, index) => (
-        <ServiceCard 
-          key={index}
-          icon={item.icon}
-          label={item.label}
-          count={item.count}
-          color={item.color}
-        />
-      ))}
-    </View>
-    </ScrollView>
-  );
-};
+
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 20,
-  },
-  card: {
-    alignItems: 'center',
-  },
-  label: {
-    fontSize: 18,
-    marginVertical: 5,
-    marginHorizontal:15,
-    fontWeight:'500'
-  },
-  count: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+container: {
+
+  flex: 1,
+ 
+  padding:2,
+  
+  
+
+},
+card: {
+  flex: 1,
+  
+ flexDirection:'column',
+   alignItems:'center'
+  
+},
+label: {
+
+      marginTop: 1,
+    textAlign: 'center',  
+    color: '#333',
+    fontSize: 15,
+    fontWeight:'500',
+     paddingBottom:1,
+     marginHorizontal:3
+     
+    },
+    count: {
+          fontSize: 17,
+          color: '#333',
+          fontWeight:'500',
+          alignItems:'center',
+          marginBottom:7
+        
+      //     fontWeight: 'bold',
+      
+         },
+
 });
+
+
+
+
+
+
+
+
+
 
 export default FotterCard;

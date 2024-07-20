@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ScrollView }
 const data = [
   { id: 1, name: 'Internship', image: require('../assets/images/internship.jpg') },
   { id: 3, name: 'Resume', image: require('../assets/images/resume.png') },
-  { id: 4, name: 'Courses / Certifications', image: require('../assets/images/courses.jpg') },
+  { id: 4, name: 'Courses ', image: require('../assets/images/courses.jpg') },
   { id: 5, name: 'Career Advice', image: require('../assets/images/career-advice.jpg') },
   { id: 2, name: 'Part Time Jobs', image: require('../assets/images/part-time-jobs.jpg') },
 ];
@@ -27,6 +27,13 @@ const Services= () => {
         showsHorizontalScrollIndicator={false}
       />
     </View>
+
+
+
+
+
+
+
   );
 };
 
@@ -35,20 +42,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#eff4fd',
+    
     padding: 10,
+   
+    
+ 
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: 'red',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   list: {
     alignItems: 'center',
   },
   item: {
-    marginHorizontal: 10,
+    marginHorizontal: 7,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -56,6 +66,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
+
     
   },
   text: {
