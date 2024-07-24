@@ -77,7 +77,7 @@ const HomeScreen = ({ navigation }) => {
           <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 7 }}>
               <Text style={{ fontSize: 20, color: 'black', fontWeight: '600', marginLeft: 11 }}>
-                Tranding Internship
+                Trending Internship
               </Text>
             </View>
             <TreandingInternship />
