@@ -58,7 +58,7 @@ const DrawerScreen = ({ navigation }) => {
         )}
       />
 
-      <TouchableOpacity style={styles.bottomView}>
+      <TouchableOpacity style={styles.bottomView}onPress={()=>(navigation.navigate('Login'))}>
         <Text style={styles.bottomText}>Login/SignUp</Text>
       </TouchableOpacity>
     </View>

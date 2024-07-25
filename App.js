@@ -7,6 +7,11 @@ import HomeScreen from './Screens/HomeScreen'
 import SearchScreen from './Screens/SearchScreen'
 import { createDrawerNavigator,  } from '@react-navigation/drawer';
 import DrawerScreen from './Screens/DrawerScreen';
+import LoginScreen from './Screens/LoginScreen';
+import RegisterScreen from './Screens/RegistrationScreen';
+import ForgotPasswordScreen from './Screens/ForgetPasswordScreen';
+import OtpVerificationScreen from './Screens/OtpVerficatioScreen';
+import ResetPasswordScreen from './Screens/ResetPassword';
 const StackNav=()=>{
  const navigation=useNavigation();
 
@@ -15,13 +20,22 @@ const Stack=createNativeStackNavigator();
   return (
    
     <Stack.Navigator 
-    
+    initialRouteName="Login"
     >
+      <Stack.Screen name='Login' component={LoginScreen} options={{headerShown:false}}/>
+
+      <Stack.Screen name="Register" component={RegisterScreen}  options={{headerShown:false}}/>
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{headerShown:false}} />
+        <Stack.Screen name="OtpVerification" component={OtpVerificationScreen} options={{headerShown:false}} />
+        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen}  options={{headerShown:false}}/>
+
+
       <Stack.Screen name='HomeScreen' component={HomeScreen}
       
        options={{
         headerShown:false
       }}/>
+      
        <Stack.Screen name='SearchScreen' component={SearchScreen} options={{
         headerShown:false
       }}/>
