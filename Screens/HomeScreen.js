@@ -50,7 +50,7 @@ const HomeScreen = ({ navigation }) => {
         return (
           <View style={styles.IntershipCOntainer}>
             <View style={{ flexDirection: 'row' }}>
-              <View style={{ marginLeft: 3 }}>
+              <View style={{ marginLeft: 13 }}>
                 <Text style={styles.internText1}>CheckOut</Text>
                 <Text style={styles.internText2}>Letest</Text>
                 <Text style={styles.internText3}>Interships</Text>
@@ -58,15 +58,15 @@ const HomeScreen = ({ navigation }) => {
               <Image source={require('../assets/images/inershipImg.png')} style={styles.intershipImg} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-              <View style={{ width: '73%' }}>
-                <Text style={{ fontSize: 17, color: '#fff', fontWeight: '500', marginTop: 3, marginLeft: 4 }}>
+              <View style={{ marginLeft:13,flex:1 }}>
+                <Text style={{ fontSize: 17, color: '#fff', fontWeight: '500', marginTop: 3, }}>
                   Find Your Perfect Internship Now
                 </Text>
-                <Text style={{ fontSize: 16, color: '#fff', marginLeft: 4, fontWeight: '500', marginTop: 2 }}>
+                <Text style={{ fontSize: 16, color: '#fff',  fontWeight: '500', marginTop: 2 }}>
                   We Take Your Responsibility
                 </Text>
               </View>
-              <TouchableOpacity style={{ marginTop: 14, backgroundColor: '#fff', borderRadius: 32, alignItems: 'center', padding: 2, marginRight: 7, justifyContent: 'center' }}>
+              <TouchableOpacity style={{ marginTop: 14, backgroundColor: '#fff', borderRadius: 32, alignItems: 'center', padding: 2, marginRight: 15, justifyContent: 'center' }}>
                 <Icon name='chevron-right' color='black' size={39} style={{ left: 2 }} />
               </TouchableOpacity>
             </View>
@@ -85,7 +85,7 @@ const HomeScreen = ({ navigation }) => {
         );
       case 'services':
         return (
-          <View style={{ backgroundColor: "#fff", marginLeft: 20, marginRight: 22, marginTop: 11, elevation: 5, paddingBottom: 10, borderRadius: 10, marginBottom: 10, shadowColor: '#000' }}>
+          <View style={{ backgroundColor: "#fff", marginLeft: 20, marginRight: 22, marginTop: 11, elevation: 3, paddingBottom: 10, borderRadius: 10, marginBottom: 90, shadowColor: '#000' }}>
             <Services />
             <FotterCard />
           </View>
@@ -121,20 +121,24 @@ export default HomeScreen
 
 const styles = StyleSheet.create({
     Hiringcard:{
-        width:180,
+        
+        width:'45.5%',
         height:160,
         backgroundColor:"#5A64F5",
         borderRadius:10, 
         marginRight:8,
+     
         elevation:5,
         shadowColor:"#000",
         marginVertical:10
     },
     findjobCard:{
-        width:180,
+      
+        width:'45.5%',
         height:160,
         backgroundColor:"#5A64F5",
         borderRadius:10,
+       
         marginLeft:8,
         elevation:5,
         shadowColor:"#000",
@@ -147,15 +151,18 @@ const styles = StyleSheet.create({
         borderTopLeftRadius:10,
     },
     cardContaainer:{
+      flex:1,
+      marginLeft:10,
+      marginRight:10,
         flexDirection:'row',
         justifyContent:'center',
       marginTop:5
     },
     IntershipCOntainer:{
-        width:"91.2%",
+        width:"90.5%",
         backgroundColor:'#5A64F5',
         height:200,
-       marginLeft:17,
+       marginLeft:15,
        marginRight:10,
        marginVertical:8,
        borderRadius:10,
@@ -166,7 +173,7 @@ const styles = StyleSheet.create({
         fontSize:29,
         fontWeight:'700',
         color:'#ffff',
-        marginLeft:14, marginRight:0,
+       
         marginTop:7,
         
     },
@@ -174,23 +181,23 @@ const styles = StyleSheet.create({
         fontSize:29,
         fontWeight:'700',
         color:'#ffff',
-        marginLeft:14,
+  
         
-        marginRight:0
+      
     },
     internText3:{
         fontSize:29,
         fontWeight:'700',
         color:'#ffff',
-        marginLeft:14,
-        marginRight:0
+        
         
     },
     intershipImg:{
-        width:220,
-        height:120,
+      flex:1,
+      
+        height:122,
         marginLeft:4,
-        marginTop:5
+        marginTop:1
 
     }
 })
