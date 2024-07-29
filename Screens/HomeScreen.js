@@ -1,4 +1,4 @@
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import Header from '../Components/Header'
 import Icon from 'react-native-vector-icons/Feather';
@@ -96,6 +96,13 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
+
+<View style={{flex:1,}}>
+
+<StatusBar backgroundColor={'#eff4fd'}/>
+
+
+ 
     <FlatList
       data={data}
       renderItem={renderItem}
@@ -103,6 +110,9 @@ const HomeScreen = ({ navigation }) => {
       showsVerticalScrollIndicator={false}
       style={{ backgroundColor: "#eff4fd" }}
     />
+
+
+</View>
   );
 }
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View ,Image, ScrollView ,TextInput} from 'react-native'
+import { StyleSheet, Text, View ,Image, ScrollView ,TextInput, StatusBar} from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Feather';
 import { TouchableOpacity } from 'react-native';
@@ -9,7 +9,7 @@ const Header = ({navigation}) => {
     
   return (
     <View style={styles.container}>
-
+   
     
     <ScrollView showsVerticalScrollIndicator={false} >
 
@@ -48,9 +48,11 @@ export default Header
 const styles = StyleSheet.create({
    
    container:{
-    marginTop:5,
+    
     flex:1,
-    backgroundColor:'#eff4fd'
+    marginTop:-3,
+    backgroundColor:'#eff4fd',
+   
    }
     ,
 
