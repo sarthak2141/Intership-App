@@ -22,6 +22,7 @@ import ResetPasswordScreen from './Screens/ResetPassword';
 import ProjectsScreen from './Screens/ProjectsScreen';
 import PostScreens from './Screens/PostScreens';
 import MessagesScreen from './Screens/MessagesScreen';
+import MainScreen from './Screens/MainScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
