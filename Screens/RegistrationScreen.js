@@ -100,6 +100,7 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleFileUpload = async (field) => {
     try {
+      setFileUploadInProgress(true)
       const results = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
         copyTo: 'cachesDirectory'
@@ -108,16 +109,18 @@ const RegisterScreen = ({ navigation }) => {
       if (results.length > 0) {
         const file = results[0];
         console.log({ file });
-        console.log(file.fileCopyUri);
-        const returnURL = await uploadFileFireBase(file?.name, file.fileCopyUri)
-        console.log(returnURL, 'jjj');
+        const getUploadedFileURL = await uploadFileFireBase(file?.name, file.fileCopyUri)
+        console.log(getUploadedFileURL, 'GET UPLOADED FILE URL');
+        setFileUploadInProgress(false)
         // setFormData(prevData => ({ ...prevData, [field]: file }));
       }
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         Alert.alert('Cancelled', 'File selection was cancelled.');
+        setFileUploadInProgress(false)
       } else {
         console.error(err);
+        setFileUploadInProgress(false)
       }
     }
   };
