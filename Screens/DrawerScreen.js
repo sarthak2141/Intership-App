@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const DrawerData = [
   { id: "01", label: 'Home', icon: 'home', navigationTo: 'HomeScreen' },
-  { id: "02", label: 'Internship', icon: 'insert-drive-file', navigationTo: '' },
+  { id: "02", label: 'Internship', icon: 'insert-drive-file', navigationTo: 'IntershipScreen' },
   { id: "03", label: 'Freelancer', icon: 'build', navigationTo: '' },
   { id: "04", label: 'Part Time Job', icon: 'favorite', navigationTo: '' },
   { id: "05", label: 'Career Advice', icon: 'chat', navigationTo: '' },

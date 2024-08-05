@@ -1,11 +1,265 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar, ScrollView, Image,Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import axios from 'axios';
+import DocumentPicker from 'react-native-document-picker';
+
+
 
 const RegisterScreen = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState('student');
   const [page, setPage] = useState(1);
+  const [formData, setFormData] = useState({
+    organizationName: '',
+    officialEmail: '',
+    officialLogo: null,
+    password: '',
+    firstName: '',
+    lastName: '',
+    mobile1: '',
+    mobile2: '',
+    mobile3: '',
+    aadhaarNumber: '',
+    dob: '',
+    collegeName: '',
+    currentCountry: '',
+    panCardNumber: '',
+    gstin: '',
+    pinCode: '',
+    companyWebsite: '',
+    state: '',
+    city: '',
+    qualification: '',
+    experience: '',
+    addressLine1: '',
+    addressLine2: '',
+    keySkill: '',
+    description: '',
+    resume: null,
+  });
 
+
+
+
+
+
+
+
+  const filterFormData = () => {
+    if (selectedOption === 'company') {
+      return {
+        organizationName: formData.organizationName,
+        officialEmail: formData.officialEmail,
+        officialLogo: formData.officialLogo,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        mobile1: formData.mobile1,
+        mobile2: formData.mobile2,
+        mobile3: formData.mobile3,
+        aadhaarNumber: formData.aadhaarNumber,
+        panCardNumber: formData.panCardNumber,
+        gstin: formData.gstin,
+        pinCode: formData.pinCode,
+        companyWebsite: formData.companyWebsite,
+        addressLine1: formData.addressLine1,
+        addressLine2: formData.addressLine2,
+        city: formData.city,
+        state: formData.state,
+        currentCountry: formData.currentCountry,
+        resume: formData.resume,
+      };
+    } else {
+      return {
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        mobileNumber: formData.mobileNumber,
+        dob: formData.dob,
+        collegeName: formData.collegeName,
+        currentCountry: formData.currentCountry,
+        state: formData.state,
+        city: formData.city,
+        qualification: formData.qualification,
+        experience: formData.experience,
+        keySkill: formData.keySkill,
+        description: formData.description,
+        resume: formData.resume,
+      };
+    }
+  };
+
+
+
+
+
+
+
+  const handleFileUpload = async (field) => {
+    try {
+      const results = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+      });
+      
+      if (results.length > 0) {
+        const file = results[0];
+        console.log( file.uri, file.type, file.name, file.size);
+        setFormData(prevData => ({ ...prevData, [field]: file }));
+      }
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        Alert.alert('Cancelled', 'File selection was cancelled.');
+      } else {
+        console.error(err);
+      }
+    }
+  };
+  
+   
+
+  
+  
+  const handleCreateAccount = async () => {
+    const url = selectedOption === 'company'
+      ? 'http://192.168.0.127:5000/client/company/register'
+      : 'http://192.168.0.127:5000/client/user/register';
+    const data = filterFormData();
+  
+    try {
+      const response = await axios.post(url, data);
+  
+      if (response.status === 200) {
+        Alert.alert('Success', 'Account created successfully!');
+        console.log(response);
+        
+      } else {
+        Alert.alert('Error', response.data.message || 'Failed to create account. Please try again.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'An error occurred while creating the account. Please try again.');
+    }
+  };
+
+
+
+
+
+
+
+
+
+  const handleInputChange = (field, value) => {
+    setFormData(prevData => ({ ...prevData, [field]: value }));
+  };
+
+
+
+  const handleOptionChange = (option) => {
+    setSelectedOption(option);
+    resetFormAndPage();
+  };
+
+
+  const resetFormAndPage = () => {
+    setFormData({
+      organizationName: '',
+      officialEmail: '',
+      officialLogo: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      mobile1: '',
+      mobile2: '',
+      mobile3: '',
+      aadhaarNumber: '',
+      dob: '',
+      collegeName: '',
+      currentCountry: '',
+      panCardNumber: '',
+      gstin: '',
+      pinCode: '',
+      companyWebsite: '',
+      state: '',
+      city: '',
+      qualification: '',
+      experience: '',
+      addressLine1: '',
+      addressLine2: '',
+      keySkill: '',
+      description: '',
+      resume: null,
+    });
+    setPage(1);
+  };
+
+
+
+
+
+
+
+
+
+  // const handleResumeUpload = async () => {
+  //   try {
+  //     const res = await DocumentPicker.pick({
+  //       type: [DocumentPicker.types.allFiles], 
+  //     });
+    
+  //     setFormData({ ...formData, resume: res[0] });
+  //   } catch (err) {
+  //     if (DocumentPicker.isCancel(err)) {
+        
+  //       Alert.alert('Cancelled', 'File selection was cancelled.');
+  //     } else {
+       
+  //       console.error(err);
+  //     }
+  //   }
+  // };
+
+
+
+
+
+
+
+
+
+
+
+  const isNextButtonEnabled = () => {
+    if (selectedOption === 'company') {
+      if (page === 1) {
+        return formData.organizationName && formData.officialEmail && formData.password && formData.firstName && formData.lastName;
+      }
+      if (page === 2) {
+        return formData.mobile1 && formData.mobile2 && formData.mobile3 && formData.aadhaarNumber;
+      }
+      if (page === 3) {
+        return formData.panCardNumber && formData.gstin && formData.pinCode && formData.companyWebsite;
+      }
+      if (page === 4) {
+        return formData.addressLine1 && formData.addressLine2 && formData.city && formData.state && formData.currentCountry;
+      }
+    } else {
+      if (page === 1) {
+        return formData.fullName && formData.email && formData.password && formData.confirmPassword;
+      }
+      if (page === 2) {
+        return formData.mobileNumber && formData.dob && formData.collegeName && formData.currentCountry;
+      }
+      if (page === 3) {
+        return formData.state && formData.city && formData.qualification && formData.experience;
+      }
+      if (page === 4) {
+        return formData.keySkill && formData.description && formData.resume;
+      }
+    }
+    return false;
+  };
   const renderPage1 = () => (
     <>
       {selectedOption === 'company' ? (
@@ -13,34 +267,51 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Organization Name</Text>
           <View style={styles.action}>
             <Icon name="briefcase" color="#05375a" size={20} />
-            <TextInput placeholder="Organization Name" style={styles.textInput} />
+            <TextInput placeholder="Organization Name" style={styles.textInput} 
+            value={formData.organizationName}
+            onChangeText={text => handleInputChange('organizationName', text)}
+            
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Official Email Id</Text>
           <View style={styles.action}>
             <Icon name="mail" color="#05375a" size={20} />
-            <TextInput placeholder="name@company_name.com" style={styles.textInput} autoCapitalize="none" />
+            <TextInput placeholder="name@company_name.com" style={styles.textInput} autoCapitalize="none"
+            value={formData.officialEmail}
+            onChangeText={text => handleInputChange('officialEmail', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Official Logo</Text>
           <View style={styles.action}>
             <Icon name="image" color="#05375a" size={20} />
-            <TouchableOpacity style={{ marginLeft: 5 }}>
-              <Text style={styles.link}>Choose File</Text>
+            <TouchableOpacity style={{ marginLeft: 5 }}onPress={() => handleFileUpload('officialLogo')}>
+            <Text style={styles.link}>{formData.officialLogo ? formData.officialLogo.name : 'Choose File'}</Text>
             </TouchableOpacity>
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Password</Text>
           <View style={styles.action}>
             <Icon name="lock" color="#05375a" size={20} />
-            <TextInput placeholder="Minimum 6 characters" secureTextEntry={true} style={styles.textInput} autoCapitalize="none" />
+            <TextInput placeholder="Minimum 6 characters" secureTextEntry={true} style={styles.textInput} autoCapitalize="none"
+             value={formData.password}
+             onChangeText={text => handleInputChange('password', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>First Name</Text>
           <View style={styles.action}>
             <Icon name="user" color="#05375a" size={20} />
-            <TextInput placeholder="First Name" style={styles.textInput} />
+            <TextInput placeholder="First Name" style={styles.textInput}
+            
+            value={formData.firstName}
+              onChangeText={text => handleInputChange('firstName', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Last Name</Text>
           <View style={styles.action}>
             <Icon name="user" color="#05375a" size={20} />
-            <TextInput placeholder="Last Name" style={styles.textInput} />
+            <TextInput placeholder="Last Name" style={styles.textInput}
+             value={formData.lastName}
+             onChangeText={text => handleInputChange('lastName', text)}
+            />
           </View>
         </>
       ) : (
@@ -48,22 +319,39 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Full Name</Text>
           <View style={styles.action}>
             <Icon name="user" color="#05375a" size={20} />
-            <TextInput placeholder="Enter your Full Name" style={styles.textInput} />
+            <TextInput placeholder="Enter your Full Name" style={styles.textInput}  
+              value={formData.fullName}
+              onChangeText={text => handleInputChange('fullName', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Email</Text>
           <View style={styles.action}>
             <Icon name="mail" color="#05375a" size={20} />
-            <TextInput placeholder="Enter your Email" style={styles.textInput} autoCapitalize="none" />
+            <TextInput placeholder="Enter your Email" style={styles.textInput} autoCapitalize="none"
+            
+            value={formData.email}
+              onChangeText={text => handleInputChange('email', text)}
+            
+            />
           </View>
+
+
           <Text style={[styles.text, { marginTop: 15 }]}>Password</Text>
           <View style={styles.action}>
             <Icon name="lock" color="#05375a" size={20} />
-            <TextInput placeholder="Enter your Password" secureTextEntry={true} style={styles.textInput} autoCapitalize="none" />
+            <TextInput placeholder="Enter your Password" secureTextEntry={true} style={styles.textInput} autoCapitalize="none" 
+             value={formData.password}
+           onChangeText={text => handleInputChange('password', text)}
+            />
           </View>
+
           <Text style={[styles.text, { marginTop: 15 }]}>Confirm Password</Text>
           <View style={styles.action}>
             <Icon name="lock" color="#05375a" size={20} />
-            <TextInput placeholder="Confirm your Password" secureTextEntry={true} style={styles.textInput} autoCapitalize="none" />
+            <TextInput placeholder="Confirm your Password" secureTextEntry={true} style={styles.textInput} autoCapitalize="none" 
+              value={formData.confirmPassword}
+            onChangeText={text => handleInputChange('confirmPassword', text)}
+            />
           </View>
         </>
       )}
@@ -77,22 +365,35 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Mobile Number.1</Text>
           <View style={styles.action}>
             <Icon name="phone" color="#05375a" size={20} />
-            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} />
+            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} 
+             value={formData.mobile1}
+             onChangeText={text => handleInputChange('mobile1', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Mobile Number.2</Text>
           <View style={styles.action}>
             <Icon name="phone" color="#05375a" size={20} />
-            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} />
+            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} 
+            value={formData.mobile2}
+            onChangeText={text => handleInputChange('mobile2', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Mobile Number.3</Text>
           <View style={styles.action}>
             <Icon name="phone" color="#05375a" size={20} />
-            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} />
+            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} 
+            
+            value={formData.mobile3}
+              onChangeText={text => handleInputChange('mobile3', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Aadhaar Number</Text>
           <View style={styles.action}>
             <Icon name="user" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Aadhaar Number" style={styles.textInput} />
+            <TextInput placeholder="Enter Aadhaar Number" style={styles.textInput} 
+            value={formData.aadhaarNumber}
+            onChangeText={text => handleInputChange('aadhaarNumber', text)}
+            />
           </View>
         </>
       ) : (
@@ -100,22 +401,34 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Mobile Number</Text>
           <View style={styles.action}>
             <Icon name="phone" color="#05375a" size={20} />
-            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} />
+            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} 
+            value={formData.mobileNumber}
+            onChangeText={text => handleInputChange('mobileNumber', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Date Of Birth</Text>
           <View style={styles.action}>
             <Icon name="calendar" color="#05375a" size={20} />
-            <TextInput placeholder="dd-mm-yyyy" style={styles.textInput} />
+            <TextInput placeholder="dd-mm-yyyy" style={styles.textInput}  
+            value={formData.dob}
+            onChangeText={text => handleInputChange('dob', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Name of College</Text>
           <View style={styles.action}>
             <Icon name="book" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Name of College" style={styles.textInput} />
+            <TextInput placeholder="Enter Name of College" style={styles.textInput}
+            value={formData.collegeName}
+            onChangeText={text => handleInputChange('collegeName', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Current Country</Text>
           <View style={styles.action}>
             <Icon name="globe" color="#05375a" size={20} />
-            <TextInput placeholder="Select Country" style={styles.textInput} />
+            <TextInput placeholder="Select Country" style={styles.textInput} 
+            value={formData.currentCountry}
+            onChangeText={text => handleInputChange('currentCountry', text)}
+            />
           </View>
         </>
       )}
@@ -129,22 +442,35 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Pan Card Number</Text>
           <View style={styles.action}>
             <Icon name="credit-card" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Pan Card Number" style={styles.textInput} />
+            <TextInput placeholder="Enter Pan Card Number" style={styles.textInput}
+            value={formData.panCardNumber}
+            onChangeText={text => handleInputChange('panCardNumber', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>GSTIN</Text>
           <View style={styles.action}>
             <Icon name="tag" color="#05375a" size={20} />
-            <TextInput placeholder="Enter GSTIN" style={styles.textInput} />
+            <TextInput placeholder="Enter GSTIN" style={styles.textInput}
+            value={formData.gstin}
+            onChangeText={text => handleInputChange('gstin', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Pin Code Number</Text>
           <View style={styles.action}>
             <Icon name="map-pin" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Pin Code Number" style={styles.textInput} />
+            <TextInput placeholder="Enter Pin Code Number" style={styles.textInput} 
+            value={formData.pinCode}
+            onChangeText={text => handleInputChange('pinCode', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Company Website</Text>
           <View style={styles.action}>
             <Icon name="globe" color="#05375a" size={20} />
-            <TextInput placeholder="Company Website" style={styles.textInput} />
+            <TextInput placeholder="Company Website" style={styles.textInput} 
+            
+            value={formData.companyWebsite}
+onChangeText={text => handleInputChange('companyWebsite', text)}
+            />
           </View>
         </>
       ) : (
@@ -152,22 +478,35 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Current State</Text>
           <View style={styles.action}>
             <Icon name="map-pin" color="#05375a" size={20} />
-            <TextInput placeholder="Enter State" style={styles.textInput} />
+            <TextInput placeholder="Enter State" style={styles.textInput} 
+            value={formData.state}
+            onChangeText={text => handleInputChange('state', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Current City</Text>
           <View style={styles.action}>
             <Icon name="map" color="#05375a" size={20} />
-            <TextInput placeholder="Enter City Name" style={styles.textInput} />
+            <TextInput placeholder="Enter City Name" style={styles.textInput}
+            value={formData.city}
+            onChangeText={text => handleInputChange('city', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Qualification</Text>
           <View style={styles.action}>
             <Icon name="award" color="#05375a" size={20} />
-            <TextInput placeholder="Select Qualification" style={styles.textInput} />
+            <TextInput placeholder="Select Qualification" style={styles.textInput} 
+            value={formData.qualification}
+            onChangeText={text => handleInputChange('qualification', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Experience</Text>
           <View style={styles.action}>
             <Icon name="briefcase" color="#05375a" size={20} />
-            <TextInput placeholder="Select Years" style={styles.textInput} />
+            <TextInput placeholder="Select Years" style={styles.textInput} 
+            value={formData.experience}
+            onChangeText={text => handleInputChange('experience', text)}
+            
+            />
           </View>
         </>
       )}
@@ -181,27 +520,42 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Address Line 1</Text>
           <View style={styles.action}>
             <Icon name="home" color="#05375a" size={20} />
-            <TextInput placeholder="Address Line 1" style={styles.textInput} />
+            <TextInput placeholder="Address Line 1" style={styles.textInput} 
+            value={formData.addressLine1}
+            onChangeText={text => handleInputChange('addressLine1', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Address Line 2</Text>
           <View style={styles.action}>
             <Icon name="home" color="#05375a" size={20} />
-            <TextInput placeholder="Address Line 2" style={styles.textInput} />
+            <TextInput placeholder="Address Line 2" style={styles.textInput} 
+            value={formData.addressLine2}
+            onChangeText={text => handleInputChange('addressLine2', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>City</Text>
           <View style={styles.action}>
             <Icon name="map" color="#05375a" size={20} />
-            <TextInput placeholder="Enter City Name" style={styles.textInput} />
+            <TextInput placeholder="Enter City Name" style={styles.textInput} 
+            value={formData.city}
+            onChangeText={text => handleInputChange('city', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>State</Text>
           <View style={styles.action}>
             <Icon name="map-pin" color="#05375a" size={20} />
-            <TextInput placeholder="Enter State" style={styles.textInput} />
+            <TextInput placeholder="Enter State" style={styles.textInput}
+            value={formData.state}
+            onChangeText={text => handleInputChange('state', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Country</Text>
           <View style={styles.action}>
             <Icon name="globe" color="#05375a" size={20} />
-            <TextInput placeholder="Select Country" style={styles.textInput} />
+            <TextInput placeholder="Select Country" style={styles.textInput} 
+            value={formData.currentCountry}
+            onChangeText={text => handleInputChange('currentCountry', text)}
+            />
           </View>
         </>
       ) : (
@@ -209,24 +563,53 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Key Skill</Text>
           <View style={styles.action}>
             <Icon name="key" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Key Skill" style={styles.textInput} />
+            <TextInput placeholder="Enter Key Skill" style={styles.textInput} 
+            
+            value={formData.keySkill}
+            onChangeText={text => handleInputChange('keySkill', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Description</Text>
           <View style={styles.action}>
             <Icon name="file-text" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Description" style={styles.textInput} />
+            <TextInput placeholder="Enter Description" style={styles.textInput}  
+            value={formData.description}
+            onChangeText={text => handleInputChange('description', text)}
+            />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Upload Your Resume</Text>
           <View style={styles.action}>
             <Icon name="upload" color="#05375a" size={20} />
-            <TouchableOpacity style={{ marginLeft: 5 }}>
-              <Text style={styles.link}>Choose File</Text>
+
+          
+            <TouchableOpacity  style={{ marginLeft: 5 }}   onPress={() => handleFileUpload('resume')} >
+              <Text style={styles.link}>
+                {formData.resume ? formData.resume.name : 'Choose File'}
+              </Text>
             </TouchableOpacity>
           </View>
         </>
       )}
     </>
   );
+
+  // const renderFooterButtons = () => (
+  //   <View style={styles.footerButtons}>
+  //     {page > 1 && (
+  //       <TouchableOpacity onPress={() => setPage(page - 1)} style={styles.navigationButton}>
+  //         <Text style={styles.link}>&lt;&lt; Previous</Text>
+  //       </TouchableOpacity>
+  //     )}
+  //     <View style={styles.buttonContainer}>
+  //       {page < 4 && (
+  //         <TouchableOpacity onPress={() => setPage(page + 1)} style={styles.navigationButton}>
+  //           <Text style={styles.link}>Next &gt;&gt;</Text>
+  //         </TouchableOpacity>
+  //       )}
+  //     </View>
+  //   </View>
+  // );
+
 
   const renderFooterButtons = () => (
     <View style={styles.footerButtons}>
@@ -237,13 +620,31 @@ const RegisterScreen = ({ navigation }) => {
       )}
       <View style={styles.buttonContainer}>
         {page < 4 && (
-          <TouchableOpacity onPress={() => setPage(page + 1)} style={styles.navigationButton}>
-            <Text style={styles.link}>Next &gt;&gt;</Text>
+          <TouchableOpacity
+            onPress={() => {
+              if (isNextButtonEnabled()) {
+                setPage(page + 1);
+              }
+            }}
+            // style={[styles.navigationButton, !isNextButtonEnabled() && styles.buttonDisabled]}
+            // disabled={!isNextButtonEnabled()}
+          >
+            <Text 
+
+
+style={[styles.link, !isNextButtonEnabled() && styles.buttonDisabled]}
+            disabled={!isNextButtonEnabled()}
+
+            
+            >Next &gt;&gt;</Text>
           </TouchableOpacity>
         )}
       </View>
     </View>
   );
+
+
+
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -261,18 +662,18 @@ const RegisterScreen = ({ navigation }) => {
               <Text style={styles.title}>Register</Text>
             </View>
             <View style={styles.optionContainer}>
-              <TouchableOpacity
-                style={[styles.optionButton, selectedOption === 'company' && styles.selectedOption]}
-                onPress={() => setSelectedOption('company')}
-              >
-                <Text style={[styles.optionText, selectedOption === 'company' && styles.selectedOptionText]}>Company</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.optionButton, selectedOption === 'student' && styles.selectedOption]}
-                onPress={() => setSelectedOption('student')}
-              >
-                <Text style={[styles.optionText, selectedOption === 'student' && styles.selectedOptionText]}>Student</Text>
-              </TouchableOpacity>
+            <TouchableOpacity
+            style={[styles.optionButton, selectedOption === 'company' && styles.selectedOption]}
+            onPress={() => handleOptionChange('company')}
+          >
+            <Text style={[styles.optionText, selectedOption === 'company' && styles.selectedOptionText]}>Company</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.optionButton, selectedOption === 'student' && styles.selectedOption]}
+            onPress={() => handleOptionChange('student')}
+          >
+            <Text style={[styles.optionText, selectedOption === 'student' && styles.selectedOptionText]}>Student</Text>
+          </TouchableOpacity>
             </View>
             <View style={styles.pageContainer}>
               {page === 1 && renderPage1()}
@@ -282,12 +683,12 @@ const RegisterScreen = ({ navigation }) => {
             </View>
             {renderFooterButtons()}
             {page === 4 && (
-              <View style={{ flex: 1, alignItems: 'center', marginTop: 15 }}>
-                <TouchableOpacity style={styles.register} onPress={() => { /* Handle registration */ }}>
-                  <Text style={styles.textSign}>Create Account</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+  <View style={{ flex: 1, alignItems: 'center', marginTop: 15 }}>
+    <TouchableOpacity style={styles.register} onPress={handleCreateAccount}>
+      <Text style={styles.textSign}>Create Account</Text>
+    </TouchableOpacity>
+  </View>
+)}
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 15 }}>
               <Text style={styles.text}>Already have an Account?</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -442,6 +843,42 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  buttonDisabled:{
+  color:'#fff'
+  },
+ 
 });
 
 export default RegisterScreen;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

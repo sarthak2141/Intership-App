@@ -22,7 +22,17 @@ import ResetPasswordScreen from './Screens/ResetPassword';
 import ProjectsScreen from './Screens/ProjectsScreen';
 import PostScreens from './Screens/PostScreens';
 import MessagesScreen from './Screens/MessagesScreen';
-import MainScreen from './Screens/MainScreen';
+import InternshipScreen from './Screens/InternShipScreen';
+
+
+
+
+
+
+
+
+
+
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -118,6 +128,7 @@ const StackNav = () => {
             <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ headerShown: false }} />
             <Stack.Screen name='HomeScreen' component={MyTabs} options={{ headerShown: false }} />
             <Stack.Screen name='SearchScreen' component={SearchScreen} options={{ headerShown: false }} />
+            <Stack.Screen name='IntershipScreen' component={InternshipScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 };
