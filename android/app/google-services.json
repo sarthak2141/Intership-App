@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "880268846013",
-    "project_id": "intership-f46da",
-    "storage_bucket": "intership-f46da.appspot.com"
+    "project_number": "95876582734",
+    "project_id": "internsipapp",
+    "storage_bucket": "internsipapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:880268846013:android:74aa58d005877b6864e8d4",
+        "mobilesdk_app_id": "1:95876582734:android:27e8cf43ccbc103df8221f",
         "android_client_info": {
-          "package_name": "com.mydomain.com"
+          "package_name": "com.intershipapp"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAevWGLb2U51K-9aIlnIMhcuJUmyOCh2LA"
+          "current_key": "AIzaSyCxe6oLItYcOyri8gvFu_ox8j0oiRo9J_I"
         }
       ],
       "services": {

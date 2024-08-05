@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar, ScrollView, Image,Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 import DocumentPicker from 'react-native-document-picker';
+import { uploadFileFireBase } from '../utils/upload-file-firebase';
 
 
 
 const RegisterScreen = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState('student');
   const [page, setPage] = useState(1);
+  const [fileUploadInProgress, setFileUploadInProgress] = useState(false)
   const [formData, setFormData] = useState({
     organizationName: '',
     officialEmail: '',
@@ -100,12 +102,16 @@ const RegisterScreen = ({ navigation }) => {
     try {
       const results = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
+        copyTo: 'cachesDirectory'
       });
-      
+
       if (results.length > 0) {
         const file = results[0];
-        console.log( file.uri, file.type, file.name, file.size);
-        setFormData(prevData => ({ ...prevData, [field]: file }));
+        console.log({ file });
+        console.log(file.fileCopyUri);
+        const returnURL = await uploadFileFireBase(file?.name, file.fileCopyUri)
+        console.log(returnURL, 'jjj');
+        // setFormData(prevData => ({ ...prevData, [field]: file }));
       }
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
@@ -115,24 +121,24 @@ const RegisterScreen = ({ navigation }) => {
       }
     }
   };
-  
-   
 
-  
-  
+
+
+
+
   const handleCreateAccount = async () => {
     const url = selectedOption === 'company'
       ? 'http://192.168.0.127:5000/client/company/register'
       : 'http://192.168.0.127:5000/client/user/register';
     const data = filterFormData();
-  
+
     try {
       const response = await axios.post(url, data);
-  
+
       if (response.status === 200) {
         Alert.alert('Success', 'Account created successfully!');
         console.log(response);
-        
+
       } else {
         Alert.alert('Error', response.data.message || 'Failed to create account. Please try again.');
       }
@@ -207,14 +213,14 @@ const RegisterScreen = ({ navigation }) => {
   //     const res = await DocumentPicker.pick({
   //       type: [DocumentPicker.types.allFiles], 
   //     });
-    
+
   //     setFormData({ ...formData, resume: res[0] });
   //   } catch (err) {
   //     if (DocumentPicker.isCancel(err)) {
-        
+
   //       Alert.alert('Cancelled', 'File selection was cancelled.');
   //     } else {
-       
+
   //       console.error(err);
   //     }
   //   }
@@ -267,41 +273,42 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Organization Name</Text>
           <View style={styles.action}>
             <Icon name="briefcase" color="#05375a" size={20} />
-            <TextInput placeholder="Organization Name" style={styles.textInput} 
-            value={formData.organizationName}
-            onChangeText={text => handleInputChange('organizationName', text)}
-            
+            <TextInput placeholder="Organization Name" style={styles.textInput}
+              value={formData.organizationName}
+              onChangeText={text => handleInputChange('organizationName', text)}
+
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Official Email Id</Text>
           <View style={styles.action}>
             <Icon name="mail" color="#05375a" size={20} />
             <TextInput placeholder="name@company_name.com" style={styles.textInput} autoCapitalize="none"
-            value={formData.officialEmail}
-            onChangeText={text => handleInputChange('officialEmail', text)}
+              value={formData.officialEmail}
+              onChangeText={text => handleInputChange('officialEmail', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Official Logo</Text>
           <View style={styles.action}>
             <Icon name="image" color="#05375a" size={20} />
-            <TouchableOpacity style={{ marginLeft: 5 }}onPress={() => handleFileUpload('officialLogo')}>
-            <Text style={styles.link}>{formData.officialLogo ? formData.officialLogo.name : 'Choose File'}</Text>
+            <TouchableOpacity style={{ marginLeft: 5,flexDirection:'row',alignItems:'center' }} onPress={() => handleFileUpload('officialLogo')}>
+              <Text style={styles.link}>{formData.officialLogo ? formData.officialLogo.name : 'Choose File'}</Text>
+              { fileUploadInProgress && <ActivityIndicator color={'#5A64F5'} size={'small'}/>}
             </TouchableOpacity>
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Password</Text>
           <View style={styles.action}>
             <Icon name="lock" color="#05375a" size={20} />
             <TextInput placeholder="Minimum 6 characters" secureTextEntry={true} style={styles.textInput} autoCapitalize="none"
-             value={formData.password}
-             onChangeText={text => handleInputChange('password', text)}
+              value={formData.password}
+              onChangeText={text => handleInputChange('password', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>First Name</Text>
           <View style={styles.action}>
             <Icon name="user" color="#05375a" size={20} />
             <TextInput placeholder="First Name" style={styles.textInput}
-            
-            value={formData.firstName}
+
+              value={formData.firstName}
               onChangeText={text => handleInputChange('firstName', text)}
             />
           </View>
@@ -309,8 +316,8 @@ const RegisterScreen = ({ navigation }) => {
           <View style={styles.action}>
             <Icon name="user" color="#05375a" size={20} />
             <TextInput placeholder="Last Name" style={styles.textInput}
-             value={formData.lastName}
-             onChangeText={text => handleInputChange('lastName', text)}
+              value={formData.lastName}
+              onChangeText={text => handleInputChange('lastName', text)}
             />
           </View>
         </>
@@ -319,7 +326,7 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Full Name</Text>
           <View style={styles.action}>
             <Icon name="user" color="#05375a" size={20} />
-            <TextInput placeholder="Enter your Full Name" style={styles.textInput}  
+            <TextInput placeholder="Enter your Full Name" style={styles.textInput}
               value={formData.fullName}
               onChangeText={text => handleInputChange('fullName', text)}
             />
@@ -328,10 +335,10 @@ const RegisterScreen = ({ navigation }) => {
           <View style={styles.action}>
             <Icon name="mail" color="#05375a" size={20} />
             <TextInput placeholder="Enter your Email" style={styles.textInput} autoCapitalize="none"
-            
-            value={formData.email}
+
+              value={formData.email}
               onChangeText={text => handleInputChange('email', text)}
-            
+
             />
           </View>
 
@@ -339,18 +346,18 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={[styles.text, { marginTop: 15 }]}>Password</Text>
           <View style={styles.action}>
             <Icon name="lock" color="#05375a" size={20} />
-            <TextInput placeholder="Enter your Password" secureTextEntry={true} style={styles.textInput} autoCapitalize="none" 
-             value={formData.password}
-           onChangeText={text => handleInputChange('password', text)}
+            <TextInput placeholder="Enter your Password" secureTextEntry={true} style={styles.textInput} autoCapitalize="none"
+              value={formData.password}
+              onChangeText={text => handleInputChange('password', text)}
             />
           </View>
 
           <Text style={[styles.text, { marginTop: 15 }]}>Confirm Password</Text>
           <View style={styles.action}>
             <Icon name="lock" color="#05375a" size={20} />
-            <TextInput placeholder="Confirm your Password" secureTextEntry={true} style={styles.textInput} autoCapitalize="none" 
+            <TextInput placeholder="Confirm your Password" secureTextEntry={true} style={styles.textInput} autoCapitalize="none"
               value={formData.confirmPassword}
-            onChangeText={text => handleInputChange('confirmPassword', text)}
+              onChangeText={text => handleInputChange('confirmPassword', text)}
             />
           </View>
         </>
@@ -365,34 +372,34 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Mobile Number.1</Text>
           <View style={styles.action}>
             <Icon name="phone" color="#05375a" size={20} />
-            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} 
-             value={formData.mobile1}
-             onChangeText={text => handleInputChange('mobile1', text)}
+            <TextInput placeholder="10 digit Mobile number" style={styles.textInput}
+              value={formData.mobile1}
+              onChangeText={text => handleInputChange('mobile1', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Mobile Number.2</Text>
           <View style={styles.action}>
             <Icon name="phone" color="#05375a" size={20} />
-            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} 
-            value={formData.mobile2}
-            onChangeText={text => handleInputChange('mobile2', text)}
+            <TextInput placeholder="10 digit Mobile number" style={styles.textInput}
+              value={formData.mobile2}
+              onChangeText={text => handleInputChange('mobile2', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Mobile Number.3</Text>
           <View style={styles.action}>
             <Icon name="phone" color="#05375a" size={20} />
-            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} 
-            
-            value={formData.mobile3}
+            <TextInput placeholder="10 digit Mobile number" style={styles.textInput}
+
+              value={formData.mobile3}
               onChangeText={text => handleInputChange('mobile3', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Aadhaar Number</Text>
           <View style={styles.action}>
             <Icon name="user" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Aadhaar Number" style={styles.textInput} 
-            value={formData.aadhaarNumber}
-            onChangeText={text => handleInputChange('aadhaarNumber', text)}
+            <TextInput placeholder="Enter Aadhaar Number" style={styles.textInput}
+              value={formData.aadhaarNumber}
+              onChangeText={text => handleInputChange('aadhaarNumber', text)}
             />
           </View>
         </>
@@ -401,33 +408,33 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.text}>Mobile Number</Text>
           <View style={styles.action}>
             <Icon name="phone" color="#05375a" size={20} />
-            <TextInput placeholder="10 digit Mobile number" style={styles.textInput} 
-            value={formData.mobileNumber}
-            onChangeText={text => handleInputChange('mobileNumber', text)}
+            <TextInput placeholder="10 digit Mobile number" style={styles.textInput}
+              value={formData.mobileNumber}
+              onChangeText={text => handleInputChange('mobileNumber', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Date Of Birth</Text>
           <View style={styles.action}>
             <Icon name="calendar" color="#05375a" size={20} />
-            <TextInput placeholder="dd-mm-yyyy" style={styles.textInput}  
-            value={formData.dob}
-            onChangeText={text => handleInputChange('dob', text)}
+            <TextInput placeholder="dd-mm-yyyy" style={styles.textInput}
+              value={formData.dob}
+              onChangeText={text => handleInputChange('dob', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Name of College</Text>
           <View style={styles.action}>
             <Icon name="book" color="#05375a" size={20} />
             <TextInput placeholder="Enter Name of College" style={styles.textInput}
-            value={formData.collegeName}
-            onChangeText={text => handleInputChange('collegeName', text)}
+              value={formData.collegeName}
+              onChangeText={text => handleInputChange('collegeName', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Current Country</Text>
           <View style={styles.action}>
             <Icon name="globe" color="#05375a" size={20} />
-            <TextInput placeholder="Select Country" style={styles.textInput} 
-            value={formData.currentCountry}
-            onChangeText={text => handleInputChange('currentCountry', text)}
+            <TextInput placeholder="Select Country" style={styles.textInput}
+              value={formData.currentCountry}
+              onChangeText={text => handleInputChange('currentCountry', text)}
             />
           </View>
         </>
@@ -443,33 +450,33 @@ const RegisterScreen = ({ navigation }) => {
           <View style={styles.action}>
             <Icon name="credit-card" color="#05375a" size={20} />
             <TextInput placeholder="Enter Pan Card Number" style={styles.textInput}
-            value={formData.panCardNumber}
-            onChangeText={text => handleInputChange('panCardNumber', text)}
+              value={formData.panCardNumber}
+              onChangeText={text => handleInputChange('panCardNumber', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>GSTIN</Text>
           <View style={styles.action}>
             <Icon name="tag" color="#05375a" size={20} />
             <TextInput placeholder="Enter GSTIN" style={styles.textInput}
-            value={formData.gstin}
-            onChangeText={text => handleInputChange('gstin', text)}
+              value={formData.gstin}
+              onChangeText={text => handleInputChange('gstin', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Pin Code Number</Text>
           <View style={styles.action}>
             <Icon name="map-pin" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Pin Code Number" style={styles.textInput} 
-            value={formData.pinCode}
-            onChangeText={text => handleInputChange('pinCode', text)}
+            <TextInput placeholder="Enter Pin Code Number" style={styles.textInput}
+              value={formData.pinCode}
+              onChangeText={text => handleInputChange('pinCode', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Company Website</Text>
           <View style={styles.action}>
             <Icon name="globe" color="#05375a" size={20} />
-            <TextInput placeholder="Company Website" style={styles.textInput} 
-            
-            value={formData.companyWebsite}
-onChangeText={text => handleInputChange('companyWebsite', text)}
+            <TextInput placeholder="Company Website" style={styles.textInput}
+
+              value={formData.companyWebsite}
+              onChangeText={text => handleInputChange('companyWebsite', text)}
             />
           </View>
         </>
@@ -478,34 +485,34 @@ onChangeText={text => handleInputChange('companyWebsite', text)}
           <Text style={styles.text}>Current State</Text>
           <View style={styles.action}>
             <Icon name="map-pin" color="#05375a" size={20} />
-            <TextInput placeholder="Enter State" style={styles.textInput} 
-            value={formData.state}
-            onChangeText={text => handleInputChange('state', text)}
+            <TextInput placeholder="Enter State" style={styles.textInput}
+              value={formData.state}
+              onChangeText={text => handleInputChange('state', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Current City</Text>
           <View style={styles.action}>
             <Icon name="map" color="#05375a" size={20} />
             <TextInput placeholder="Enter City Name" style={styles.textInput}
-            value={formData.city}
-            onChangeText={text => handleInputChange('city', text)}
+              value={formData.city}
+              onChangeText={text => handleInputChange('city', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Qualification</Text>
           <View style={styles.action}>
             <Icon name="award" color="#05375a" size={20} />
-            <TextInput placeholder="Select Qualification" style={styles.textInput} 
-            value={formData.qualification}
-            onChangeText={text => handleInputChange('qualification', text)}
+            <TextInput placeholder="Select Qualification" style={styles.textInput}
+              value={formData.qualification}
+              onChangeText={text => handleInputChange('qualification', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Experience</Text>
           <View style={styles.action}>
             <Icon name="briefcase" color="#05375a" size={20} />
-            <TextInput placeholder="Select Years" style={styles.textInput} 
-            value={formData.experience}
-            onChangeText={text => handleInputChange('experience', text)}
-            
+            <TextInput placeholder="Select Years" style={styles.textInput}
+              value={formData.experience}
+              onChangeText={text => handleInputChange('experience', text)}
+
             />
           </View>
         </>
@@ -520,41 +527,41 @@ onChangeText={text => handleInputChange('companyWebsite', text)}
           <Text style={styles.text}>Address Line 1</Text>
           <View style={styles.action}>
             <Icon name="home" color="#05375a" size={20} />
-            <TextInput placeholder="Address Line 1" style={styles.textInput} 
-            value={formData.addressLine1}
-            onChangeText={text => handleInputChange('addressLine1', text)}
+            <TextInput placeholder="Address Line 1" style={styles.textInput}
+              value={formData.addressLine1}
+              onChangeText={text => handleInputChange('addressLine1', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Address Line 2</Text>
           <View style={styles.action}>
             <Icon name="home" color="#05375a" size={20} />
-            <TextInput placeholder="Address Line 2" style={styles.textInput} 
-            value={formData.addressLine2}
-            onChangeText={text => handleInputChange('addressLine2', text)}
+            <TextInput placeholder="Address Line 2" style={styles.textInput}
+              value={formData.addressLine2}
+              onChangeText={text => handleInputChange('addressLine2', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>City</Text>
           <View style={styles.action}>
             <Icon name="map" color="#05375a" size={20} />
-            <TextInput placeholder="Enter City Name" style={styles.textInput} 
-            value={formData.city}
-            onChangeText={text => handleInputChange('city', text)}
+            <TextInput placeholder="Enter City Name" style={styles.textInput}
+              value={formData.city}
+              onChangeText={text => handleInputChange('city', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>State</Text>
           <View style={styles.action}>
             <Icon name="map-pin" color="#05375a" size={20} />
             <TextInput placeholder="Enter State" style={styles.textInput}
-            value={formData.state}
-            onChangeText={text => handleInputChange('state', text)}
+              value={formData.state}
+              onChangeText={text => handleInputChange('state', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Country</Text>
           <View style={styles.action}>
             <Icon name="globe" color="#05375a" size={20} />
-            <TextInput placeholder="Select Country" style={styles.textInput} 
-            value={formData.currentCountry}
-            onChangeText={text => handleInputChange('currentCountry', text)}
+            <TextInput placeholder="Select Country" style={styles.textInput}
+              value={formData.currentCountry}
+              onChangeText={text => handleInputChange('currentCountry', text)}
             />
           </View>
         </>
@@ -563,26 +570,26 @@ onChangeText={text => handleInputChange('companyWebsite', text)}
           <Text style={styles.text}>Key Skill</Text>
           <View style={styles.action}>
             <Icon name="key" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Key Skill" style={styles.textInput} 
-            
-            value={formData.keySkill}
-            onChangeText={text => handleInputChange('keySkill', text)}
+            <TextInput placeholder="Enter Key Skill" style={styles.textInput}
+
+              value={formData.keySkill}
+              onChangeText={text => handleInputChange('keySkill', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Description</Text>
           <View style={styles.action}>
             <Icon name="file-text" color="#05375a" size={20} />
-            <TextInput placeholder="Enter Description" style={styles.textInput}  
-            value={formData.description}
-            onChangeText={text => handleInputChange('description', text)}
+            <TextInput placeholder="Enter Description" style={styles.textInput}
+              value={formData.description}
+              onChangeText={text => handleInputChange('description', text)}
             />
           </View>
           <Text style={[styles.text, { marginTop: 15 }]}>Upload Your Resume</Text>
           <View style={styles.action}>
             <Icon name="upload" color="#05375a" size={20} />
 
-          
-            <TouchableOpacity  style={{ marginLeft: 5 }}   onPress={() => handleFileUpload('resume')} >
+
+            <TouchableOpacity style={{ marginLeft: 5 }} onPress={() => handleFileUpload('resume')} >
               <Text style={styles.link}>
                 {formData.resume ? formData.resume.name : 'Choose File'}
               </Text>
@@ -626,16 +633,16 @@ onChangeText={text => handleInputChange('companyWebsite', text)}
                 setPage(page + 1);
               }
             }}
-            // style={[styles.navigationButton, !isNextButtonEnabled() && styles.buttonDisabled]}
-            // disabled={!isNextButtonEnabled()}
+          // style={[styles.navigationButton, !isNextButtonEnabled() && styles.buttonDisabled]}
+          // disabled={!isNextButtonEnabled()}
           >
-            <Text 
+            <Text
 
 
-style={[styles.link, !isNextButtonEnabled() && styles.buttonDisabled]}
-            disabled={!isNextButtonEnabled()}
+              style={[styles.link, !isNextButtonEnabled() && styles.buttonDisabled]}
+              disabled={!isNextButtonEnabled()}
 
-            
+
             >Next &gt;&gt;</Text>
           </TouchableOpacity>
         )}
@@ -662,18 +669,18 @@ style={[styles.link, !isNextButtonEnabled() && styles.buttonDisabled]}
               <Text style={styles.title}>Register</Text>
             </View>
             <View style={styles.optionContainer}>
-            <TouchableOpacity
-            style={[styles.optionButton, selectedOption === 'company' && styles.selectedOption]}
-            onPress={() => handleOptionChange('company')}
-          >
-            <Text style={[styles.optionText, selectedOption === 'company' && styles.selectedOptionText]}>Company</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.optionButton, selectedOption === 'student' && styles.selectedOption]}
-            onPress={() => handleOptionChange('student')}
-          >
-            <Text style={[styles.optionText, selectedOption === 'student' && styles.selectedOptionText]}>Student</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.optionButton, selectedOption === 'company' && styles.selectedOption]}
+                onPress={() => handleOptionChange('company')}
+              >
+                <Text style={[styles.optionText, selectedOption === 'company' && styles.selectedOptionText]}>Company</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.optionButton, selectedOption === 'student' && styles.selectedOption]}
+                onPress={() => handleOptionChange('student')}
+              >
+                <Text style={[styles.optionText, selectedOption === 'student' && styles.selectedOptionText]}>Student</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.pageContainer}>
               {page === 1 && renderPage1()}
@@ -683,12 +690,12 @@ style={[styles.link, !isNextButtonEnabled() && styles.buttonDisabled]}
             </View>
             {renderFooterButtons()}
             {page === 4 && (
-  <View style={{ flex: 1, alignItems: 'center', marginTop: 15 }}>
-    <TouchableOpacity style={styles.register} onPress={handleCreateAccount}>
-      <Text style={styles.textSign}>Create Account</Text>
-    </TouchableOpacity>
-  </View>
-)}
+              <View style={{ flex: 1, alignItems: 'center', marginTop: 15 }}>
+                <TouchableOpacity style={styles.register} onPress={handleCreateAccount}>
+                  <Text style={styles.textSign}>Create Account</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 15 }}>
               <Text style={styles.text}>Already have an Account?</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -843,10 +850,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  buttonDisabled:{
-  color:'#fff'
+  buttonDisabled: {
+    color: '#fff'
   },
- 
+
 });
 
 export default RegisterScreen;
